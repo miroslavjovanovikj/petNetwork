@@ -1,18 +1,26 @@
 const mongoose = require('mongoose');
-const Blog = require('../models/blog')
+const Blog = require('../models/blog');
+const jwt = require('jsonwebtoken');
 
 const rootRoute = (req,res) => {
   res.redirect('/blog')
 }
-const getBlogs = (req,res) => {
-  Blog.find({})
-  .then(data=>{
-      res.send({data:data})
+const getBlogs = (req,res, next) => {
+  jwt.verify(req.token,"Nie cistime oni davet", (err, authData)=>{
+    if(err){
+      res.sendStatus(403)
+    }else{
+      Blog.find({})
+      .then(data=>{
+            res.header('Access-Control-Allow-Credentials', true)
+          res.send({data:data, user:authData} )
+          console.log(req.user)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+    }
   })
-  .catch(err=>{
-    console.log(err)
-  })
-
 }
 
 const getNewBlogs = (req,res) => {

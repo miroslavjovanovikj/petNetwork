@@ -4,42 +4,64 @@ const expressSession = require('express-session');
 const passportLocalMongoose = require('passport-local-mongoose');
 const bodyParser = require('body-parser');
 const User = require('../models/user');
+const AuthController ={};
+const jwt = require('jsonwebtoken');
 
-// const getRegister = (req,res) => {
-//   res.send("registe")
-// }
-const postRegister =(req,res)=>{
-  const newUser = new User({username:req.body.username, email:req.body.email});
-  User.register(newUser, req.body.password, (err, user)=>{
-    if(err){
-      console.log(err)
-      return res.send('register')
-    }
-    passport.authenticate("local")(req,res, ()=>{
-      res.redirect("/")
+
+AuthController.register= async(req,res)=>{
+  try{
+    User.register(new User({username:req.body.username}), req.body.password, (err, account)=>{
+      if(err){
+        return res.status(500).send('error occurrded:'+err)
+      }
+      passport.authenticate('local',{
+        session:false
+      })(req,res,()=>{
+        res.status(200).send("succesfuly created new acaunt")
+      })
     })
-  })
+  }catch(err){
+    return res.status(500).send("error"+err);
+  }
 }
 
-const loginMiddleware = passport.authenticate('local', {
-  successRedirect:'/blog',
-  failureRedirect:'/login'
-})
+
+AuthController.login = async(req,res,next)=>{
+    try{
+      if(!req.body.username || !req.body.password){
+        return res.status(400).json({
+          message:"Something is not right with your input"
+        })
+      }
+      passport.authenticate('local',{session:false}, (err, user, info)=>{
+        if(err || !user){
+          return res.status(400).json({
+            message:"Something is not right",
+            user:user
+          })
+        }
+        req.login(user,{session:false},(err)=>{
+          if(err){
+            res.send(err)
+            console.log("tuka err")
+          }
+          const token = jwt.sign({id:user.id, username:user.username},'Nie cistime oni davet');
+          return res.json({user:user.username, token})
+        })
+      })(req,res);
+    }catch(err){
+            console.log(err)
+          }
+}
 
 const getLogout = (req,res)=>{
   req.logout();
   res.redirect("/")
 }
-const isLoggedIn = (req,res,next) =>{
-  if(req.isAuthenticated()){
-    return next()
-  }
-  res.redirect('/logout')
-}
+
 module.exports= {
-  postRegister,
-  loginMiddleware,
-  getLogout,
-  isLoggedIn
+  AuthController,
+  getLogout
+
 
 }
