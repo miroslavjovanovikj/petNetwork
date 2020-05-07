@@ -40,7 +40,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.use(new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey:"Nie cistime oni davet"
+        secretOrKey:"Nie cistime oni davet"
   },
   function(jwtPayload,cb){
     return User.findById({id:jwtPayload.id})
@@ -54,11 +54,6 @@ passport.use(new JWTStrategy({
 ))
 app.use('/auth', auth)
 app.use('/user', passport.authenticate('jwt',{session:false}), user)
-// app.use((req,res, next)=>{
-//     res.locals.currentUser= req.user;
-//   // console.log(res.locals.currentUser)
-//   next();
-// })
 app.use(blogRoutes)
 app.use(authRoutes)
 
