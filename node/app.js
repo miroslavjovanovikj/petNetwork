@@ -21,7 +21,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors({
-  methods:['GET','POST'],
+  methods:['GET','POST','PUT','DELETE'],
   credentials: true
 }))
 db.init();
