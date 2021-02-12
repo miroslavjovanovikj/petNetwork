@@ -57,6 +57,6 @@ app.use('/user', passport.authenticate('jwt',{session:false}), user)
 app.use(blogRoutes)
 app.use(authRoutes)
 
-app.listen(27017, ()=>{
+app.listen( 27017, ()=>{
   console.log("Server is started")
 })

@@ -10,6 +10,7 @@ import Navbar from './Navbar';
 import Logout from '../authentication/Logout'
 import Login from '../authentication/Login';
 import Register from '../authentication/Register';
+import Error from './Error'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/css/App.css';
@@ -21,13 +22,14 @@ class App extends Component{
           <Navbar />
           <Switch>
             <Route exact path="/" component={Login}/>
-            <Route exact path="/blog" component={Index}/>
+            <Route exact path="/blog" render={(routeParams)=><Index isAuthenticated={false} {...routeParams}/>}/>
             <Route exact path="/new" component={Create}/>
             <Route exact path="/edit/:id" component={Edit}/>
             <Route exact path="/show" component={Show}/>
             <Route exact path="/login" component={Login}/>
             <Route exact path="/register" component={Register}/>
             <Route exact path="/logout" component={Logout}/>
+            <Route render={()=><Error />}/>
           </Switch>
       </div>
     )

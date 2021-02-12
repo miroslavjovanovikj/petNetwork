@@ -4,28 +4,22 @@ import {Redirect} from 'react-router-dom';
 class Logout extends Component{
   constructor(props){
     super(props)
-    this.state={
-      redirect:false
-    }
-    this.onSubmit= this.onSubmit.bind(this);
+    this.logout= this.logout.bind(this);
   }
-  onSubmit(e){
-    e.preventDefault()
+  logout(){
     axios.get('/http://localhost:27017/logout')
      .then(()=>{
-       this.setState({
-         redirect:true
-       })
+        sessionStorage.removeItem('myData')
      })
+     .catch(err=>err)
+  }
+  logout(){
+      sessionStorage.removeItem('myData')
   }
   render(){
-    return <Redirect  to="/" />
     return(
       <div>
-      <form onSubmit={this.onSubmit}>
-          <input type="submit" value="logout" />
-        <h1>dfsafas</h1>
-      </form>
+        <button onClick={this.logout}>logout</button>
       </div>
     )
   }

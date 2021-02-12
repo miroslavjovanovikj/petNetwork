@@ -24,7 +24,8 @@ class Create extends Component{
       img:this.state.img,
       text:this.state.text
     }
-    axios.post('http://localhost:27017/blog', obj)
+    const token = sessionStorage.getItem('myData')
+    axios.post('http://localhost:27017/blog', obj,{headers:{Authorization:`Bearer ${token}`}})
       .then(res=>{
         this.setState(st=>({
           ...st,
@@ -39,10 +40,14 @@ class Create extends Component{
   render(){
     if(this.state.redirect){
       return <Redirect  to="/blog" />
+
     }
     return(
-      <div className="Create-container">
-            <h3 className="Create-h3">Create</h3>
+      <div className="Create">
+        {
+          sessionStorage.getItem('myData') ?
+          <div className="Create-container">
+          <h3 className="Create-h3">Create</h3>
           <form onSubmit={this.onSubmit}>
             <fieldset>
               <input type="text" className="Create-input" name="title" value={this.state.title} onChange={this.handleChange} placeholder="Title"/>
@@ -61,6 +66,8 @@ class Create extends Component{
             </fieldset>
               <input  className="Create-button Create-input"type="submit" value="create" />
           </form>
+        </div> : <h2>You are not loged in</h2>
+        }
       </div>
     )
   }

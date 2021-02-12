@@ -7,7 +7,6 @@ class Register extends Component{
     super(props)
     this.state={
       username:'',
-      email:'',
       password:'',
       redirect:false
 
@@ -22,14 +21,12 @@ onSubmit(e){
   e.preventDefault()
   const obj={
     username:this.state.username,
-    email:this.state.email,
     password:this.state.password
   }
 axios.post('http://localhost:27017/register', obj)
   .then(()=>{
     this.setState({
       username:'',
-      email:'',
       password:'',
       redirect:true
     })
@@ -44,7 +41,6 @@ axios.post('http://localhost:27017/register', obj)
       <div>
         <form onSubmit={this.onSubmit}>
           <input type="text" name="username" value={this.state.username} onChange={this.handleChange} />
-          <input type="email" name="email" value={this.state.email} onChange={this.handleChange}/>
           <input type="password" name="password" value={this.state.password} onChange={this.handleChange}/>
           <input  type="submit" value="register" />
         </form>

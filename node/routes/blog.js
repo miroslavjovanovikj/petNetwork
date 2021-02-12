@@ -7,11 +7,11 @@ router.get('/',blogCtrl.rootRoute);
 
 router.get('/blog',middleware.verifyToken, blogCtrl.getBlogs)
 // router.get('/new',blogCtrl.getNewBlogs);
-router.post('/blog',blogCtrl.postBlog);
+router.post('/blog',middleware.verifyToken,blogCtrl.postBlog);
 
 router.get('/blog/:id', blogCtrl.getShowBlog);
 router.get('/edit/:id', blogCtrl.getEditBlog);
-router.put('/update/:id', blogCtrl.putEditBlog);
+router.put('/update/:id',middleware.verifyToken ,blogCtrl.putEditBlog);
 router.delete('/blog/:id', blogCtrl.deleteBlog);
 
 module.exports = router

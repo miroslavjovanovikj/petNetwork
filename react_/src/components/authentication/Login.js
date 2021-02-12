@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
+import Index from '../index/Index'
 class Login extends Component{
   constructor(props){
     super(props)
     this.state={
       username:'',
-      email:'',
       password:'',
-      redirect:false
+      redirect:false,
     }
     this.handleChange= this.handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -20,11 +20,13 @@ class Login extends Component{
     e.preventDefault()
     const obj = {
       username:this.state.username,
-      email:this.state.email,
       password:this.state.password
     }
     axios.post('http://localhost:27017/login', obj)
-      .then(()=>{
+
+      .then((res)=>{
+        sessionStorage.setItem('myData',res.data.token)
+        console.log(res.data.token)
         this.setState({
           redirect:true
         })
@@ -36,12 +38,12 @@ class Login extends Component{
   render(){
     if(this.state.redirect){
         return <Redirect  to="/blog" />
+
     }
     return(
       <div>
         <form onSubmit={this.onSubmit}>
           <input type="text" name="username" value={this.state.username} onChange={this.handleChange} />
-          <input type="email" name="email" value={this.state.email}  onChange={this.handleChange}  />
           <input type="password" name="password" value={this.state.password}  onChange={this.handleChange}  />
           <input type="submit" value="Login" />
         </form>

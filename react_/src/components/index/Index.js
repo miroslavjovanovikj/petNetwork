@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Logout from '.././authentication/Logout'
 import {Link} from 'react-router-dom';
 
 import Show from './Show';
@@ -8,13 +9,15 @@ import Show from './Show';
 class Index extends Component{
   constructor(props){
     super(props);
-    this.state={blogs:[]}
+    this.state={blogs:[], auth:false}
     this.delete=this.delete.bind(this)
   }
+
   componentDidMount(){
-    axios.get('http://localhost:27017/blog/')
+
+    const token = sessionStorage.getItem('myData')
+    axios.get('http://localhost:27017/blog/', {headers:{Authorization:`Bearer ${token}`}})
       .then(res => {
-        console.log(res.data.data)
         this.setState(st=>({...st,blogs:[...res.data.data]}))
       })
       .catch(err => {
@@ -32,20 +35,21 @@ class Index extends Component{
       .catch((err)=>console.log(err));
   }
 
-
   render(){
     return(
       <div>
-      {this.state.blogs.map(b=>(
-          <Show
-            obj={b}
-            deleteItem={this.delete}
-            value={b._id}
-            key={b._id}
-          />
-
-        ))
-      }
+        {
+          sessionStorage.getItem('myData') ?
+          this.state.blogs.map(b=>(
+              <Show
+                obj={b}
+                deleteItem={this.delete}
+                value={b._id}
+                key={b._id}
+              />
+            )) :
+            <h3>You need to login first</h3>
+        }
       </div>
     )
   }
